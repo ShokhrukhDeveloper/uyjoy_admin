@@ -18,44 +18,51 @@ class AnnouncementAdd extends StatefulWidget {
 class _AnnouncementAddState extends State<AnnouncementAdd> {
   List<String> names=[];
  Future<void>_send()async{
+    setState(() {
+      loading=true;
+    });
+    try{
+      var request = http.MultipartRequest('POST', Uri.parse('http://localhost:5214/Announcement'));
+      request.fields.addAll({
+        'Price': '${priceController?.text}',
+        'Title': '${titleController?.text}',
+        'Description': '${descriptionController?.text}',
+        'RoomQuantity': '${roomQuantityController?.text}',
+        'Square': '${squareController?.text}',
+        'MaxFloor': '${maxFloorController?.text}',
+        'Floor': '${floorController?.text}',
+        'KitchenSquare': '${kitchenSquareController?.text}',
+        'BuilderType': '${builderTypeController?.text}',
+        'Year': '${yearController?.text}',
+        'Repair': '${repairController?.text}',
+        'Height': '56m',
+        'FlatHasThings': '${flatHasThingsController?.text}',
+        'MaklerPrice': 'true'
+      });
+      var i=0;
+      for(var img in images){
+        final multipartFile = http.MultipartFile.fromBytes('Images', img,filename: names[i]);
+        request.files.add(multipartFile);
+        i++;
+      }
+      http.StreamedResponse response = await request.send();
 
-   var request = http.MultipartRequest('POST', Uri.parse('http://localhost:5214/Announcement'));
-   request.fields.addAll({
-     'Price': '5454',
-     'Title': 'sADFASDLKFJHASLDJKFFJHLK',
-     'Description': 'ASDFASDFASDF',
-     'RoomQuantity': '3',
-     'Square': '56',
-     'MaxFloor': '5',
-     'Floor': '45',
-     'KitchenSquare': '45',
-     'BuilderType': 'ASWDRFawer awer',
-     'Year': '1989',
-     'Repair': 'awsdfasdrfa',
-     'Height': 'asdfasdf',
-     'FlatHasThings': 'asdfasdf',
-     'MaklerPrice': 'true'
-   });
-   var i=0;
-   for(var img in images){
-     final multipartFile = http.MultipartFile.fromBytes('Images', img,filename: names[i]);
-     request.files.add(multipartFile);
-     i++;
-   }
-   http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        var result = await response.stream.bytesToString();
+        successMsg("Muvofaqqiyatli qo'shildi : ${titleController?.text}");
 
-   if (response.statusCode == 200) {
-     print(await response.stream.bytesToString());
-   }
-   else {
-     print("----------------------------");
-     print(response.statusCode);
-     print(response.reasonPhrase);
-     print("----------------------------");
-   }
+      }
+      else {
+        errorMsg("So'rovda  xatolik code: ${response.statusCode} reason:${response.statusCode}");
+      }
+    }catch(e){
+      errorMsg("Xatolik yuz berdi: $e");
+    }
+   
 
  }
- 
+ void errorMsg(String errMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.red,));
+ void successMsg(String successMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(successMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.green,));
   List<Uint8List> images=[];
   Future<void> _pickFile() async {
     var result = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -67,21 +74,57 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
       });
     }
   }
-  TextEditingController priceController=TextEditingController();
-  TextEditingController titleController=TextEditingController();
-  TextEditingController maklerPriceController=TextEditingController();
-  TextEditingController descriptionController=TextEditingController();
-  TextEditingController roomQuantityController=TextEditingController();
-  TextEditingController squareController=TextEditingController();
-  TextEditingController maxFloorController=TextEditingController();
-  TextEditingController floorController=TextEditingController();
-  TextEditingController kitchenSquareController=TextEditingController();
-  TextEditingController builderTypeController=TextEditingController();
-  TextEditingController yearController=TextEditingController();
-  TextEditingController repairController=TextEditingController();
-  TextEditingController flatHasThingsController=TextEditingController();
-  TextEditingController contactController=TextEditingController();
-
+  TextEditingController? priceController;
+  TextEditingController? titleController;
+  TextEditingController? maklerPriceController;
+  TextEditingController? descriptionController;
+  TextEditingController? roomQuantityController;
+  TextEditingController? squareController;
+  TextEditingController? maxFloorController;
+  TextEditingController? floorController;
+  TextEditingController? kitchenSquareController;
+  TextEditingController? builderTypeController;
+  TextEditingController? yearController;
+  TextEditingController? repairController;
+  TextEditingController? flatHasThingsController;
+  TextEditingController? contactController;
+  @override
+  void initState() {
+    priceController=TextEditingController();
+    titleController=TextEditingController();
+    maklerPriceController=TextEditingController();
+    descriptionController=TextEditingController();
+    roomQuantityController=TextEditingController();
+    squareController=TextEditingController();
+    maxFloorController=TextEditingController();
+    floorController=TextEditingController();
+    kitchenSquareController=TextEditingController();
+    builderTypeController=TextEditingController();
+    yearController=TextEditingController();
+    repairController=TextEditingController();
+    flatHasThingsController=TextEditingController();
+    contactController=TextEditingController();
+    super.initState();
+  }
+  @override
+  void dispose() {
+    priceController?.dispose();
+    titleController?.dispose();
+    maklerPriceController?.dispose();
+    descriptionController?.dispose();
+    roomQuantityController?.dispose();
+    squareController?.dispose();
+    maxFloorController?.dispose();
+    floorController?.dispose();
+    kitchenSquareController?.dispose();
+    builderTypeController?.dispose();
+    yearController?.dispose();
+    repairController?.dispose();
+    flatHasThingsController?.dispose();
+    contactController?.dispose();
+    super.dispose();
+  }
+  bool loading=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,22 +134,24 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
           onPressed: widget.onTapBack,
         ),
       ),
-      body:  SingleChildScrollView(
+      body: loading?const Center(child: CircularProgressIndicator()):  SingleChildScrollView(
         child: Center(
-          child: Column(
+          child:Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomTextFiled(label: "Nomini yozing", hint: "nomi"),
-              CustomTextFiled(label: "Narxini yozing", hint: "narxi"),
-              CustomTextFiled(label: "Qo'shimcha ma'lumotlar", hint: "ma'lumot yozing"),
-              CustomTextFiled(label: "Xonalar soni", hint: "soni"),
-              CustomTextFiled(label: "Umumiy maydoni", hint: "maydon"),
-              CustomTextFiled(label: "Qavatlar soni", hint: "qavatliligi"),
-              CustomTextFiled(label: "Joylashgan qavati", hint: "qavati"),
-              CustomTextFiled(label: "Oshxona maydoni", hint: "oshona maydoni"),
-              CustomTextFiled(label: "Qurilish turi", hint: "qurilish turi"),
-              CustomTextFiled(label: "Qurilish turi", hint: "qurilish turi"),
-                Wrap(
+              CustomTextFiled(controller: titleController,label: "Nomini yozing", hint: "nomi"),
+              CustomTextFiled(controller: priceController,label: "Narxini yozing", hint: "narxi"),
+              CustomTextFiled(controller: descriptionController,label: "Qo'shimcha ma'lumotlar", hint: "ma'lumot yozing"),
+              CustomTextFiled(controller: roomQuantityController,label: "Xonalar soni", hint: "soni"),
+              CustomTextFiled(controller: squareController,label: "Umumiy maydoni", hint: "maydon"),
+              CustomTextFiled(controller: maxFloorController,label: "Qavatlar soni", hint: "qavatliligi"),
+              CustomTextFiled(controller: floorController,label: "Joylashgan qavati", hint: "qavati"),
+              CustomTextFiled(controller: kitchenSquareController,label: "Oshxona maydoni", hint: "oshona maydoni"),
+              CustomTextFiled(controller: builderTypeController,label: "Qurilish turi", hint: "qurilish turi"),
+              CustomTextFiled(controller: yearController,label: "Qurilgan yili", hint: "yili"),
+              CustomTextFiled(controller: repairController,label: "Ta'mirlangangligi ", hint: "ta'mirlanganligi"),
+              CustomTextFiled(controller: flatHasThingsController,label: "Kvartirada bor narsalar", hint: "narsalari"),
+              Wrap(
                   children: images.map((e) =>Container(
                     width:150,height: 150,
                    margin: const EdgeInsets.all(5),
@@ -121,7 +166,6 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
                         child: Image.memory(e,width: 150,height: 150,fit: BoxFit.cover,)),
                   ) ).toList(),
                 ),
-
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: ElevatedButton(
@@ -150,9 +194,3 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
     );
   }
 }
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/ShokhrukhDeveloper/uyjoy_admin.git
-git push -u origin main

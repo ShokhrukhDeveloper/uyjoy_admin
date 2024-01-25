@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:uy_admin/models/announces.dart';
+import 'package:uy_admin/urls/Urls.dart';
 class ProductItemWidget extends StatelessWidget {
-  const ProductItemWidget({super.key});
-
+  const ProductItemWidget({super.key, required this.announcement});
+  final AnnouncementItem announcement;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -11,43 +13,41 @@ class ProductItemWidget extends StatelessWidget {
           aspectRatio: 1.0,
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: const Image(
-                image: NetworkImage("https://picsum.photos/200"),
+              child:  Image(
+                image: NetworkImage("${AppUrls.baseUrl}/files/${announcement.photo}"),
                 fit: BoxFit.cover,
               )),
         ),
-        const Text("Macbook 14",
-          style: TextStyle(fontWeight:FontWeight.w500,
+         Text(announcement.title,
+          style: const TextStyle(fontWeight:FontWeight.w500,
               fontSize: 18
           ),
         ),
-        const Text("Rs 450,000",
-          style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),
-
-        ),
+         Text(announcement.price.toStringAsFixed(2),
+          style: const TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
         Row(
           children: [
             Container(
               margin: const EdgeInsets.only(right: 4),
               padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
               decoration: BoxDecoration(
-                  color: Color(0xffEFEFEF),
+                  color: const Color(0xffEFEFEF),
                   borderRadius: BorderRadius.circular(8)
               ),
-              child: const Text("New"),
+              child:  Text(announcement.repair),
             ),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 3,horizontal: 2),
+              padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
               decoration: BoxDecoration(
                   color: Color(0xffEFEFEF),
                   borderRadius: BorderRadius.circular(8)
 
               ),
-              child: const Text("10/10"),
+              child: Text("10/10"),
             ),
           ],
         ),
-        const Text("Gulper Phase 4, Lah...  "),
+        Text(announcement.flatHasThings),
 
       ],
     );

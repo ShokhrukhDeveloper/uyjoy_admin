@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:uy_admin/UI/widgets/sized_config.dart';
 
-class CustomTextFiled extends StatelessWidget {
-  const CustomTextFiled(
-      {super.key, this.controller, required this.hint, required this.label, this.maxLength, this.formatter, this.suffixText});
-  final TextEditingController? controller;
+class CustomDescriptionFiled extends StatelessWidget {
+  const CustomDescriptionFiled({super.key, this.controller,required this.hint,required this.label, this.maxLength});
+  final TextEditingController? controller ;
   final String hint;
-  final String? suffixText;
   final String label;
   final int? maxLength;
-  final List<TextInputFormatter>? formatter;
-
-
-  @override  Widget build(BuildContext context) {
-
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20),
       // height: 60,//SizeConfig().heightSize(context, 10),
       width: SizeConfig().widthSize(context, 40.5),
       child: Column(
@@ -25,22 +19,23 @@ class CustomTextFiled extends StatelessWidget {
           Text(hint),
           const SizedBox(height: 5,),
           TextField(
-            cursorColor: Colors.black,
             maxLength: maxLength,
-            inputFormatters: formatter,
+            maxLines: 5,
+            cursorColor: Colors.black,
+            // style: TextStyle(color: Colors.),
             controller: controller,
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
-              suffixText:suffixText,
               border: const OutlineInputBorder(),
               hintText: label,
               isDense: true,
-              contentPadding:
-                  const EdgeInsets.only(left: 5, bottom: 11, top: 11, right: 5),
+              contentPadding: const EdgeInsets.only(
+                  left: 5, bottom: 11, top: 11, right: 5),
             ),
           ),
         ],
       ),
     );
+
   }
 }

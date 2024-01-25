@@ -1,10 +1,20 @@
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uy_admin/UI/widgets/custom_text_field.dart';
+
+import '../../../urls/Urls.dart';
+import '../../widgets/checkbox_grid.dart';
+import '../../widgets/custom_addtional_button.dart';
+import '../../widgets/custom_description.dart';
+import '../../widgets/custom_dropdown.dart';
+import '../../widgets/custom_price_field.dart';
+import '../../widgets/sized_config.dart';
 
 
 class AnnouncementAdd extends StatefulWidget {
@@ -22,7 +32,7 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
       loading=true;
     });
     try{
-      var request = http.MultipartRequest('POST', Uri.parse('http://localhost:5214/Announcement'));
+      var request = http.MultipartRequest('POST', Uri.parse(AppUrls.announce));
       request.fields.addAll({
         'Price': '${priceController?.text}',
         'Title': '${titleController?.text}',
@@ -40,19 +50,22 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
         'MaklerPrice': 'true'
       });
       var i=0;
-      for(var img in images){
-        final multipartFile = http.MultipartFile.fromBytes('Images', img,filename: names[i]);
-        request.files.add(multipartFile);
-        i++;
-      }
+      // for(var img in images){
+      //   final multipartFile = http.MultipartFile.fromBytes('Images', img,filename: names[i]);
+      //   request.files.add(multipartFile);
+      //   i++;
+      // }
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        var result = await response.stream.bytesToString();
         successMsg("Muvofaqqiyatli qo'shildi : ${titleController?.text}");
-
+        widget.onTapBack.call();
       }
       else {
+        loading=false;
+        setState(() {
+
+        });
         errorMsg("So'rovda  xatolik code: ${response.statusCode} reason:${response.statusCode}");
       }
     }catch(e){
@@ -61,15 +74,17 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
    
 
  }
- void errorMsg(String errMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.red,));
+
+
+ void  errorMsg(String errMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.red,));
  void successMsg(String successMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(successMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.green,));
-  List<Uint8List> images=[];
-  Future<void> _pickFile() async {
+  List<Uint8List?> images= List.filled(10, null);
+  Future<void> _pickFile(int index) async {
     var result = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (result != null) {
       names.add(result.name);
      var img = await result.readAsBytes();
-     images.add(img);
+     images[index]=img;
       setState(()  {
       });
     }
@@ -106,6 +121,7 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
     contactController=TextEditingController();
     super.initState();
   }
+ var negotiable=true;
   @override
   void dispose() {
     priceController?.dispose();
@@ -139,53 +155,166 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
           child:Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomTextFiled(controller: titleController,label: "Nomini yozing", hint: "nomi"),
-              CustomTextFiled(controller: priceController,label: "Narxini yozing", hint: "narxi"),
-              CustomTextFiled(controller: descriptionController,label: "Qo'shimcha ma'lumotlar", hint: "ma'lumot yozing"),
-              CustomTextFiled(controller: roomQuantityController,label: "Xonalar soni", hint: "soni"),
-              CustomTextFiled(controller: squareController,label: "Umumiy maydoni", hint: "maydon"),
-              CustomTextFiled(controller: maxFloorController,label: "Qavatlar soni", hint: "qavatliligi"),
-              CustomTextFiled(controller: floorController,label: "Joylashgan qavati", hint: "qavati"),
-              CustomTextFiled(controller: kitchenSquareController,label: "Oshxona maydoni", hint: "oshona maydoni"),
-              CustomTextFiled(controller: builderTypeController,label: "Qurilish turi", hint: "qurilish turi"),
-              CustomTextFiled(controller: yearController,label: "Qurilgan yili", hint: "yili"),
-              CustomTextFiled(controller: repairController,label: "Ta'mirlangangligi ", hint: "ta'mirlanganligi"),
-              CustomTextFiled(controller: flatHasThingsController,label: "Kvartirada bor narsalar", hint: "narsalari"),
-              Wrap(
-                  children: images.map((e) =>Container(
-                    width:150,height: 150,
-                   margin: const EdgeInsets.all(5),
-                    padding: const EdgeInsets.all(0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-
-                      border: Border.all(color: Colors.green,width: 2)
+              //title
+              CustomTextFiled(controller: titleController,label: "Sarlavhani Masalan, 2 xonali uy sotiladi", hint: "Sarlavhani kiriting*",maxLength: 50,),
+             //images
+              SizedBox(
+                width: SizeConfig().widthSize(context, 40.5),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 10,
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 100,
+                    mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 1
                     ),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.memory(e,width: 150,height: 150,fit: BoxFit.cover,)),
-                  ) ).toList(),
-                ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: ElevatedButton(
-                  onPressed: _pickFile,
-                  style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.deepPurple)
+                    itemBuilder: (c,i)=>InkWell(
+                      onTap: ()=>_pickFile(i),
+                        child:images[i]!=null? ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.memory(images[i]!,width: 150,height: 150,fit: BoxFit.cover,))
+                    :Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.grey[200],
+                      child: const Center(child: Icon(Icons.camera_enhance_sharp),),
+                    ))),
+              ),
+              //description
+              CustomDescriptionFiled(controller:descriptionController, hint:  "Tavsif", label: "Ushbu elon haqida odamlar blishi uchun ko'proq tavsilotlarni yozing",maxLength: 5000,),
+              //Price
+              CustomPriceFiled(
+                controller: priceController,
+                label: "",
+                hint: "Narx*",
+                priceType: true,
+                onChangedType: (bool? type) {  },
+                onChangedNegotiable: (bool? type) { negotiable=type!; },
+                negotiable: negotiable, negotiableText: "Kelishuv asosida",),
+              //Addintinal info
+              CustomAdditonalButton(
+                textValue1: 'Yange',
+                textValue2: 'Eski',
+                value: true,
+                onChanged: (bool value) {  },
+                text: 'Turarjoy turi*',),
+              // Total rooms
+              CustomTextFiled(
+                  controller: descriptionController,
+                  label: "",
+                  hint: "Xonalar soni*",
+                  maxLength: 2,
+                  formatter: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              // Total square
+              CustomTextFiled(
+                  controller: roomQuantityController,
+                  label: "",
+                  suffixText:  "m\u00b2",
+                  hint: "Umumiy maydon*",
+                  maxLength: 4,
+                  formatter: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              //live square
+              CustomTextFiled(
+                  controller: squareController,
+                  label: "m\u00b2",
+                  maxLength: 3,
+                  formatter: [FilteringTextInputFormatter.digitsOnly],
+                  hint: "Yashash maydoni"),
+              //kitchen square
+              CustomTextFiled(
+                  controller: maxFloorController,
+                  label: "m\u00b2",
+                  hint: "Oshxona maydoni",maxLength: 3,),
+              //FLOOR
+              CustomTextFiled(
+                  controller: floorController,
+                  label: "", hint: "Qavati*",
+                  maxLength: 3,
+              ),
+              // etajnost
+              CustomTextFiled(
+                  controller: kitchenSquareController,
+                  label: "",
+                  hint: "Uy qavatliligi*",
+
+              ),
+              //type of building
+              CustomDropDown(
+              hint: "Qurilish turi",
+                options: const ["Panelli", "Monolit", "Blokli"],),
+              //PLANE
+              CustomDropDown(
+                hint: 'Rejasi',
+                options: const ["Aralash", "Alohida", "Studia"],),
+              //year
+              CustomDropDown(
+                hint: "Uy qurilgan/topshiriladigan yil",
+                options: const ["1997", "1397", "1998"],),
+              //furnished
+              CustomAdditonalButton(
+                textValue1: 'Ha',
+                textValue2: "Yo'q",
+                value: true,
+                onChanged: (bool value) {  },
+                text: 'Mebelli*',),
+              //apartmerent has
+              const CheckboxGrid(hint: 'Kvartirada bor', items: [
+                'Option 1',
+                'Option 2',
+                'Option 3',
+                'Option 4',
+                'Option 5',
+                'Option 6',
+                'Option 7',
+                'Option 8',
+                'Option 9',
+                'Option 10',
+              ],),
+              // nearby
+              const CheckboxGrid(hint: 'Yaqinida joylashgan', items: [
+                'Option 1',
+                'Option 2',
+                'Option 3',
+                'Option 4',
+                'Option 5',
+                'Option 6',
+                'Option 7',
+                'Option 8',
+                'Option 9',
+                'Option 10',
+              ],),
+              // is makler price has
+              CustomAdditonalButton(
+                textValue1: 'Bor',
+                textValue2: "Yo'q",
+                value: true,
+                onChanged: (bool value) {  },
+                text: 'Vositachilik haqqi*',),
+              CustomTextFiled(
+                controller: kitchenSquareController,
+                label: "",
+                hint: "Telefon raqami",
+                maxLength: 13,
+              ),
+              InkWell(
+                onTap: _send,
+                child: Container(
+                  width: 200,
+                  margin: const EdgeInsets.only(right: 10),
+                  height: 40,
+
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color:Colors.green
                   ),
-                  child: const Icon(Icons.add_photo_alternate_outlined,color:Colors.white,size: 56,),
+                  child: const Center(child: Text("E`lonni joylashtirish",style:  TextStyle(color: Colors.white),)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: ElevatedButton(
-                  onPressed: _send,
-                  style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.deepPurple)
-                  ),
-                  child: const Icon(Icons.send,color:Colors.white,size: 30,),
-                ),
-              ),
+              SizedBox(height: 200,)
 
             ],
           ),

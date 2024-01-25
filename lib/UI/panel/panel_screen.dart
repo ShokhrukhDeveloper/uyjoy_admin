@@ -1,4 +1,4 @@
-
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:uy_admin/UI/panel/pages/announcement.dart';
 import 'package:uy_admin/UI/panel/pages/announcement_add.dart';
@@ -34,10 +34,12 @@ class _AdminPanelState extends State<AdminPanel> {
       _selectedIndex = index;
     });
   }
-screenType screen=screenType.home;
+screenType screen=screenType.productAdd;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer:MediaQuery.of(context).size.width<600? NavigationSidebar(selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,):const SizedBox(),
       appBar: AppBar(
         title:  InkWell(
           child: const Text('Admin Panel'),
@@ -56,7 +58,7 @@ screenType screen=screenType.home;
       body: Row(
         children: [
           // Sidebar Navigation Menu
-          NavigationSidebar(
+          if(MediaQuery.of(context).size.width>=600) NavigationSidebar(
             selectedIndex: _selectedIndex,
             onItemTapped: _onItemTapped,
           ),

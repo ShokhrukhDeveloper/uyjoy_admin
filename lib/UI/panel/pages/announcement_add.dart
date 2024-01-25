@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uy_admin/UI/widgets/custom_text_field.dart';
+import 'package:uy_admin/models/announce_details.dart';
 
 import '../../../urls/Urls.dart';
 import '../../widgets/checkbox_grid.dart';
@@ -27,6 +29,11 @@ class AnnouncementAdd extends StatefulWidget {
 
 class _AnnouncementAddState extends State<AnnouncementAdd> {
   List<String> names=[];
+  List<AnnounceDetail> apartementHas=[];
+  List<AnnounceDetail> layout=[];
+  List<AnnounceDetail> nearby=[];
+  List<AnnounceDetail> repair=[];
+  List<AnnounceDetail> typeOfBuilding=[];
  Future<void>_send()async{
     setState(() {
       loading=true;
@@ -38,7 +45,7 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
         'Title': '${titleController?.text}',
         'Description': '${descriptionController?.text}',
         'RoomQuantity': '${roomQuantityController?.text}',
-        'Square': '${squareController?.text}',
+        'Square': '${totalSquareController?.text}',
         'MaxFloor': '${maxFloorController?.text}',
         'Floor': '${floorController?.text}',
         'KitchenSquare': '${kitchenSquareController?.text}',
@@ -75,7 +82,21 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
 
  }
 
+Future<void> getDetail()async{
+   var result = await http.get(Uri.parse(AppUrls.announceDetail));
+   print(result.body);
+   if(result.statusCode==200){
 
+     var res=jsonDecode(result.body);
+    apartementHas=res["data"]["apartementHas"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
+    layout=res["data"]["layout"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
+    nearby=res["data"]["nearby"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
+    typeOfBuilding=res["data"]["typeOfBuilding"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
+    repair=res["data"]["repair"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
+
+   }
+
+}
  void  errorMsg(String errMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.red,));
  void successMsg(String successMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(successMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.green,));
   List<Uint8List?> images= List.filled(10, null);
@@ -89,15 +110,15 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
       });
     }
   }
-  TextEditingController? priceController;
   TextEditingController? titleController;
-  TextEditingController? maklerPriceController;
-  TextEditingController? descriptionController;
+  TextEditingController? priceController;
   TextEditingController? roomQuantityController;
-  TextEditingController? squareController;
-  TextEditingController? maxFloorController;
-  TextEditingController? floorController;
+  TextEditingController? descriptionController;
+  TextEditingController? totalSquareController;
+  TextEditingController? liveSquareController;
   TextEditingController? kitchenSquareController;
+  TextEditingController? floorController;
+  TextEditingController? maxFloorController;
   TextEditingController? builderTypeController;
   TextEditingController? yearController;
   TextEditingController? repairController;
@@ -105,12 +126,12 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
   TextEditingController? contactController;
   @override
   void initState() {
+    getDetail();
     priceController=TextEditingController();
     titleController=TextEditingController();
-    maklerPriceController=TextEditingController();
     descriptionController=TextEditingController();
     roomQuantityController=TextEditingController();
-    squareController=TextEditingController();
+    totalSquareController=TextEditingController();
     maxFloorController=TextEditingController();
     floorController=TextEditingController();
     kitchenSquareController=TextEditingController();
@@ -126,10 +147,9 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
   void dispose() {
     priceController?.dispose();
     titleController?.dispose();
-    maklerPriceController?.dispose();
     descriptionController?.dispose();
     roomQuantityController?.dispose();
-    squareController?.dispose();
+    totalSquareController?.dispose();
     maxFloorController?.dispose();
     floorController?.dispose();
     kitchenSquareController?.dispose();
@@ -140,6 +160,7 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
     contactController?.dispose();
     super.dispose();
   }
+
   bool loading=false;
   @override
   Widget build(BuildContext context) {
@@ -150,7 +171,9 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
           onPressed: widget.onTapBack,
         ),
       ),
-      body: loading?const Center(child: CircularProgressIndicator()):  SingleChildScrollView(
+      body: loading?
+      const Center(child: CircularProgressIndicator()):
+      SingleChildScrollView(
         child: Center(
           child:Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -190,19 +213,20 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
                 label: "",
                 hint: "Narx*",
                 priceType: true,
+                  formatter: [FilteringTextInputFormatter.digitsOnly],
                 onChangedType: (bool? type) {  },
                 onChangedNegotiable: (bool? type) { negotiable=type!; },
                 negotiable: negotiable, negotiableText: "Kelishuv asosida",),
               //Addintinal info
               CustomAdditonalButton(
-                textValue1: 'Yange',
+                textValue1: 'Yangi',
                 textValue2: 'Eski',
                 value: true,
                 onChanged: (bool value) {  },
                 text: 'Turarjoy turi*',),
               // Total rooms
               CustomTextFiled(
-                  controller: descriptionController,
+                  controller: roomQuantityController,
                   label: "",
                   hint: "Xonalar soni*",
                   maxLength: 2,
@@ -210,23 +234,23 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
               ),
               // Total square
               CustomTextFiled(
-                  controller: roomQuantityController,
+                  controller: totalSquareController,
                   label: "",
                   suffixText:  "m\u00b2",
                   hint: "Umumiy maydon*",
-                  maxLength: 4,
+                  maxLength: 3,
                   formatter: [FilteringTextInputFormatter.digitsOnly],
               ),
               //live square
               CustomTextFiled(
-                  controller: squareController,
+                  controller: liveSquareController,
                   label: "m\u00b2",
                   maxLength: 3,
                   formatter: [FilteringTextInputFormatter.digitsOnly],
                   hint: "Yashash maydoni"),
               //kitchen square
               CustomTextFiled(
-                  controller: maxFloorController,
+                  controller: kitchenSquareController,
                   label: "m\u00b2",
                   hint: "Oshxona maydoni",maxLength: 3,),
               //FLOOR
@@ -237,7 +261,7 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
               ),
               // etajnost
               CustomTextFiled(
-                  controller: kitchenSquareController,
+                  controller: maxFloorController,
                   label: "",
                   hint: "Uy qavatliligi*",
 
@@ -245,15 +269,15 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
               //type of building
               CustomDropDown(
               hint: "Qurilish turi",
-                options: const ["Panelli", "Monolit", "Blokli"],),
+                options: typeOfBuilding,),
               //PLANE
               CustomDropDown(
                 hint: 'Rejasi',
-                options: const ["Aralash", "Alohida", "Studia"],),
+                options: layout,),
               //year
-              CustomDropDown(
-                hint: "Uy qurilgan/topshiriladigan yil",
-                options: const ["1997", "1397", "1998"],),
+              // CustomDropDown(
+              //   hint: "Uy qurilgan/topshiriladigan yil",
+              //   options: const ["1997", "1397", "1998"],),
               //furnished
               CustomAdditonalButton(
                 textValue1: 'Ha',
@@ -262,31 +286,9 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
                 onChanged: (bool value) {  },
                 text: 'Mebelli*',),
               //apartmerent has
-              const CheckboxGrid(hint: 'Kvartirada bor', items: [
-                'Option 1',
-                'Option 2',
-                'Option 3',
-                'Option 4',
-                'Option 5',
-                'Option 6',
-                'Option 7',
-                'Option 8',
-                'Option 9',
-                'Option 10',
-              ],),
+              CheckboxGrid(hint: 'Kvartirada bor', items: apartementHas,),
               // nearby
-              const CheckboxGrid(hint: 'Yaqinida joylashgan', items: [
-                'Option 1',
-                'Option 2',
-                'Option 3',
-                'Option 4',
-                'Option 5',
-                'Option 6',
-                'Option 7',
-                'Option 8',
-                'Option 9',
-                'Option 10',
-              ],),
+              CheckboxGrid(hint: 'Yaqinida joylashgan', items: nearby,),
               // is makler price has
               CustomAdditonalButton(
                 textValue1: 'Bor',
@@ -314,7 +316,7 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
                   child: const Center(child: Text("E`lonni joylashtirish",style:  TextStyle(color: Colors.white),)),
                 ),
               ),
-              SizedBox(height: 200,)
+              const SizedBox(height: 200,)
 
             ],
           ),

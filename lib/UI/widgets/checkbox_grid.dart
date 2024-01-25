@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uy_admin/UI/widgets/sized_config.dart';
+
+import '../../models/announce_details.dart';
 class CheckboxGrid extends StatefulWidget {
   const CheckboxGrid({super.key, required this.hint, required this.items});
   final String hint;
-  final List<String> items;
+  final List<AnnounceDetail> items;
   @override
   State<CheckboxGrid> createState() => _CheckboxGridState();
 }
@@ -11,7 +13,7 @@ class CheckboxGrid extends StatefulWidget {
 class _CheckboxGridState extends State<CheckboxGrid> {
 
 
-  List<bool> selectedItems = List.generate(10, (index) => false);
+
   @override
   Widget build(BuildContext context) {
 
@@ -30,7 +32,6 @@ class _CheckboxGridState extends State<CheckboxGrid> {
             itemBuilder: (c,i)=>InkWell(
               onTap: () {
                 setState(() {
-
                 });
               },
               child: Row(
@@ -39,15 +40,15 @@ class _CheckboxGridState extends State<CheckboxGrid> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Checkbox(
-                    value: selectedItems[i],
+                    value: widget.items[i].isSelected,
                     onChanged: (bool? value) {
                       setState(() {
-                        selectedItems[i] = value!;
+                        widget.items[i].isSelected = value!;
                       });
                     },
                   ),
                   Text(
-                    widget.items[i],
+                    widget.items[i].uz,
                     style: TextStyle(fontSize: 16.0),
                   ),
 

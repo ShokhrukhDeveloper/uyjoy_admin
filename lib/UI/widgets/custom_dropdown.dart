@@ -5,10 +5,11 @@ import 'package:uy_admin/models/announce_details.dart';
 
 class CustomDropDown extends StatefulWidget {
   CustomDropDown(
-      {super.key, this.controller, required this.hint, required this.options, });
+      {super.key, this.controller, required this.hint, required this.options, required this.onChanged, });
   final TextEditingController? controller;
   final String hint;
   final List<AnnounceDetail> options;
+  final Function(AnnounceDetail announceDetail) onChanged;
   @override
   State<CustomDropDown> createState() => _CustomDropDownState();
 }
@@ -39,13 +40,15 @@ class _CustomDropDownState extends State<CustomDropDown> {
             }).toList(),
             onChanged: (AnnounceDetail? newValue) {
               setState(() {
-                selectedOption = newValue!;
+
+                if(newValue!=null){
+                  widget.onChanged(newValue);
+                  selectedOption=newValue;
+                }
               });
             },
           ),
-          SizedBox(height: 20),
-          // Text('Selected Option: $selectedOption'),
-
+          const SizedBox(height: 20),
         ],
       ),
     );

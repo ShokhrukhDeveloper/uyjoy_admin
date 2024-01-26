@@ -46,13 +46,12 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
       margin: const EdgeInsets.symmetric(horizontal: 25),
       child: GridView.builder(
         itemCount: announement.length,
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio:156/300,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10
-
-          ),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          childAspectRatio:156/300,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10
+      ),
           itemBuilder: (context,index)=> ProductItemWidget(announcement: announement[index],)),
     );
   }

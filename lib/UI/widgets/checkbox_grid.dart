@@ -9,11 +9,7 @@ class CheckboxGrid extends StatefulWidget {
   @override
   State<CheckboxGrid> createState() => _CheckboxGridState();
 }
-
 class _CheckboxGridState extends State<CheckboxGrid> {
-
-
-
   @override
   Widget build(BuildContext context) {
 

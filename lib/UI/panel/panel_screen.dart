@@ -1,7 +1,8 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
-import 'package:uy_admin/UI/panel/pages/announcement.dart';
-import 'package:uy_admin/UI/panel/pages/announcement_add.dart';
+import 'package:uy_admin/UI/panel/pages/announce_info/announce_info.dart';
+import 'package:uy_admin/UI/panel/pages/announcements/announcement.dart';
+import 'package:uy_admin/UI/panel/pages/announce_add/announcement_add.dart';
 
 
 
@@ -18,12 +19,12 @@ enum screenType{
 class _AdminPanelState extends State<AdminPanel> {
   // List<PlatformFile>? _files;
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   static  final List<Widget> _pages = [
 
     const AnnouncementWidget(),
-    const Icon(Icons.u_turn_left),
+    const AnnounceInfo(),
     const Icon(Icons.u_turn_left),
     const Icon(Icons.u_turn_left),
     const Icon(Icons.face),
@@ -34,7 +35,7 @@ class _AdminPanelState extends State<AdminPanel> {
       _selectedIndex = index;
     });
   }
-screenType screen=screenType.productAdd;
+screenType screen=screenType.home;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

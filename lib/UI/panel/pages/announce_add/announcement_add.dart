@@ -11,14 +11,14 @@ import 'package:intl/intl.dart';
 import 'package:uy_admin/UI/widgets/custom_text_field.dart';
 import 'package:uy_admin/models/announce_details.dart';
 
-import '../../../urls/Urls.dart';
-import '../../widgets/checkbox_grid.dart';
-import '../../widgets/custom_addtional_button.dart';
-import '../../widgets/custom_description.dart';
-import '../../widgets/custom_dropdown.dart';
-import '../../widgets/custom_price_field.dart';
-import '../../widgets/date_picker.dart';
-import '../../widgets/sized_config.dart';
+import '../../../../urls/Urls.dart';
+import '../../../widgets/checkbox_grid.dart';
+import '../../../widgets/custom_addtional_button.dart';
+import '../../../widgets/custom_description.dart';
+import '../../../widgets/custom_dropdown.dart';
+import '../../../widgets/custom_price_field.dart';
+import '../../../widgets/date_picker.dart';
+import '../../../widgets/sized_config.dart';
 
 
 class AnnouncementAdd extends StatefulWidget {
@@ -52,15 +52,12 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
        }
      }
 
-     // for(var img in images){
-     //   final multipartFile = http.MultipartFile.fromBytes('Images', img,filename: names[i]);
-     //   request.files.add(multipartFile);
-     //   i++;
-     // }
-
      var response = await request.send();
-     print(response.statusCode);
-     print(response.reasonPhrase);
+     if (kDebugMode) {
+       print(response.statusCode);
+       print(response.reasonPhrase);
+     }
+
      if (response.statusCode == 200) {
        successMsg("Muvofaqqiyatli qo'shildi : ${titleController?.text}");
        // widget.onTapBack.call();

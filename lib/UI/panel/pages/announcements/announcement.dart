@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:uy_admin/UI/panel/pages/product_item.dart';
+import 'package:uy_admin/UI/panel/pages/announcements/product_item.dart';
 import  'package:http/http.dart' as http;
 import 'package:uy_admin/urls/Urls.dart';
 
 
-import '../../../models/announces.dart';
+import '../../../../models/announces.dart';
 
 class AnnouncementWidget extends StatefulWidget {
   const AnnouncementWidget({super.key});

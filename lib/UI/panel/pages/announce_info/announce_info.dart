@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:uy_admin/UI/panel/pages/announce_info/announce_details_add.dart';
+import 'package:uy_admin/UI/widgets/custom_dropdown.dart';
+import 'package:uy_admin/UI/widgets/custom_text_field.dart';
 
 import '../../../../models/announce_details.dart';
 import '../../../../urls/Urls.dart';
@@ -19,6 +22,7 @@ class _AnnounceDetailsState extends State<AnnounceInfo> {
   List<AnnounceDetail> repair=[];
   List<AnnounceDetail> typeOfBuilding=[];
   List<AnnounceDetail> current=[];
+  List<AnnounceDetail> a=[AnnounceDetail(id: 0,uz: "",ru: "")];
 
   Future<void> getDetail()async{
     var result = await http.get(Uri.parse(AppUrls.announceDetail));
@@ -38,15 +42,15 @@ class _AnnounceDetailsState extends State<AnnounceInfo> {
 
       });
     }
-
   }
+
   @override
   void initState() {
     getDetail();
     super.initState();
-
   }
   var loading=true;
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -59,17 +63,18 @@ class _AnnounceDetailsState extends State<AnnounceInfo> {
             scrollDirection: Axis.horizontal,
             children: [
               IconButton(padding:EdgeInsets.zero,
-                  onPressed: (){}, icon: const Icon(Icons.add)),
+                  onPressed: (){
+                    showDialog(context: context, builder: (c)=>const AnnounceAddDetails());
+                  }, icon: const Icon(Icons.add)),
               TextButton(onPressed: (){
                 current=repair;
                 setState(() {
-
                 });
-              }, child: const Text("Ta'mir")),
+              },
+                  child: const Text("Ta'mir")),
               TextButton(onPressed: (){
                 current=nearby;
                 setState(() {
-
                 });
               }, child: const Text("Yaqinida joylashgan")),
               TextButton(onPressed: (){

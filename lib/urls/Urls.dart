@@ -6,6 +6,7 @@ class AppUrls{
   static const announceDetail="$baseUrl/AnnounceDetail";
   static const announceDetailLayout="$announceDetail/Layout";
   static const announceDetailRepair="$announceDetail/Repair";
+  static const announceDetailNearby="$announceDetail/Nearby";
   static const announceDetailApartementHas="$announceDetail/ApartementHas";
   static const announceDetailTypeOfBuilding="$announceDetail/TypeOfBuilding";
   static const _announceSearch="$announce/search?";

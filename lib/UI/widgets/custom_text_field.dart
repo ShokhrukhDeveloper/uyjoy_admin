@@ -4,11 +4,11 @@ import 'package:uy_admin/UI/widgets/sized_config.dart';
 
 class CustomTextFiled extends StatelessWidget {
   const CustomTextFiled(
-      {super.key, this.controller, required this.hint, required this.label, this.maxLength, this.formatter, this.suffixText, this.validator});
+      {super.key, this.controller, required this.hint, this.label, this.maxLength, this.formatter, this.suffixText, this.validator});
   final TextEditingController? controller;
   final String hint;
   final String? suffixText;
-  final String label;
+  final String? label;
   final int? maxLength;
   final String? Function(String? str)? validator;
   final List<TextInputFormatter>? formatter;

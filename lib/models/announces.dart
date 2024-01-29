@@ -1,12 +1,12 @@
 class AnnouncementItem {
   final int id;
   final int price;
-  final String photo;
+  final String? photo;
   final String title;
   final int roomQuantity;
-  final String flatHasThings;
+  final String? flatHasThings;
   final bool maklerPrice;
-  final String repair;
+  final String? repair;
   AnnouncementItem(
       {required this.id,
       required this.price,

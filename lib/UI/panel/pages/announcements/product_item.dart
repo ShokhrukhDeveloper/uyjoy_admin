@@ -34,12 +34,12 @@ class ProductItemWidget extends StatelessWidget {
                   color: const Color(0xffEFEFEF),
                   borderRadius: BorderRadius.circular(8)
               ),
-              child:  Text(announcement.repair),
+              child:  Text(announcement.repair??""),
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
               decoration: BoxDecoration(
-                  color: Color(0xffEFEFEF),
+                  color: const Color(0xffEFEFEF),
                   borderRadius: BorderRadius.circular(8)
 
               ),
@@ -47,7 +47,7 @@ class ProductItemWidget extends StatelessWidget {
             ),
           ],
         ),
-        Text(announcement.flatHasThings),
+        Text(announcement.flatHasThings??""),
 
       ],
     );

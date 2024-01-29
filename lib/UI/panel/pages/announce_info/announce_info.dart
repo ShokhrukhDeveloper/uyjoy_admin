@@ -63,8 +63,9 @@ class _AnnounceDetailsState extends State<AnnounceInfo> {
             scrollDirection: Axis.horizontal,
             children: [
               IconButton(padding:EdgeInsets.zero,
-                  onPressed: (){
-                    showDialog(context: context, builder: (c)=>const AnnounceAddDetails());
+                  onPressed: ()async{
+                   await showDialog(context: context, builder: (c)=>const AnnounceAddDetails());
+                   getDetail();
                   }, icon: const Icon(Icons.add)),
               TextButton(onPressed: (){
                 current=repair;

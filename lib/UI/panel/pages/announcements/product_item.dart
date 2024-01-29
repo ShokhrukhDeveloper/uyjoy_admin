@@ -43,7 +43,7 @@ class ProductItemWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8)
 
               ),
-              child: Text("10/10"),
+              child: const Text("10/10"),
             ),
           ],
         ),

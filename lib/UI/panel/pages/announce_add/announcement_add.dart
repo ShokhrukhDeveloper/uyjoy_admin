@@ -38,9 +38,6 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
   List<AnnounceDetail> typeOfBuilding=[];
 
  Future<void>_send(int id)async {
-   setState(() {
-     loading=true;
-   });
    try{
      var request = http.MultipartRequest('POST', Uri.parse("${AppUrls.announceUploadImage}/$id"));
      request.headers.addAll({'Content-Type': 'multipart/form-data','accept': '*/*'});
@@ -60,7 +57,7 @@ class _AnnouncementAddState extends State<AnnouncementAdd> {
 
      if (response.statusCode == 200) {
        successMsg("Muvofaqqiyatli qo'shildi : ${titleController?.text}");
-       // widget.onTapBack.call();
+       widget.onTapBack.call();
      }
      else {
        loading=false;
@@ -119,6 +116,8 @@ Future<void> createNew({
     required List<AnnounceDetail> nearby})async{
       List<AnnounceDetail> apartmentHases=[];
       List<AnnounceDetail> nearbies=[];
+      loading=true;
+      setState(() {});
       for(var i in apartmentHas)
         {
           if(i.isSelected)apartmentHases.add(i);
@@ -129,7 +128,7 @@ Future<void> createNew({
       }
     var response = await http.post(Uri.parse(AppUrls.announce),
     headers: {
-      "Accept": "application/json",
+      // "Accept": "application/json",
       "content-type": "application/json"
     },
     body: json.encode({
@@ -162,11 +161,22 @@ Future<void> createNew({
           "nearby":  nearbies.map<Map>((e) =>
           {
             "id": e.id,
-            "uz": "-",
-            "ru": "-"
+            "uz": "- ",
+            "ru": "- "
           }).toList()
     }));
-      if(response.statusCode==200)_send(14);
+      if (kDebugMode) {
+        print(response.statusCode);
+        print(response.body);
+      }
+      if(response.statusCode==200)
+        {var data= jsonDecode(response.body)["data"]["id"];
+          _send(data);
+        }
+      else{
+        errorMsg("Xatolik yuzberdi : xatolik haqida xabar bering status kodi:${response.statusCode} \nsabab: ${response.body}");
+      }
+      setState(() {});
 
   }
  void  errorMsg(String errMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.red,));
@@ -436,30 +446,30 @@ Future<void> createNew({
                    if (kDebugMode) {
                      print(result);
                    }
-                   _send(11);
-                    // createNew(
-                    //     price: int.parse(priceController?.text??""),
-                    //     priceType: priceType,
-                    //     title: titleController?.text,
-                    //     description: descriptionController?.text,
-                    //     typeOfBuildingId: buildingType?.id,
-                    //     regionId: 1,
-                    //     repairId: buildingRepair?.id,
-                    //     layoutId: buildingLayout?.id,
-                    //     totalSpace: int.parse(totalSquareController?.text??"0"),
-                    //     numberOfStoreys: int.parse(numberOfStoreys?.text??"0"),
-                    //     numberOfRooms: int.parse(roomQuantityController?.text??"0"),
-                    //     livingSpace: int.parse(liveSquareController?.text??"0"),
-                    //     kitchenSpace: int.parse(kitchenSquareController?.text??"0"),
-                    //     year: year.year,
-                    //     ceilingHeight:270,
-                    //     maklerPrice: maklerPrice,
-                    //     isFurnished: isFurnished,
-                    //     isNegotiable: negotiable,
-                    //     isNewBuilding: isNewBuilding,
-                    //     contactPhone: contactController?.text,
-                    //     apartmentHas: apartementHas,
-                    //     nearby: nearby);
+                   // _send(11);
+                    createNew(
+                        price: int.parse(priceController?.text??""),
+                        priceType: priceType,
+                        title: titleController?.text,
+                        description: descriptionController?.text,
+                        typeOfBuildingId: buildingType?.id,
+                        regionId: 1,
+                        repairId: buildingRepair?.id,
+                        layoutId: buildingLayout?.id,
+                        totalSpace: int.parse(totalSquareController?.text??"0"),
+                        numberOfStoreys: int.parse(numberOfStoreys?.text??"0"),
+                        numberOfRooms: int.parse(roomQuantityController?.text??"0"),
+                        livingSpace: int.parse(liveSquareController?.text??"0"),
+                        kitchenSpace: int.parse(kitchenSquareController?.text??"0"),
+                        year: year.year,
+                        ceilingHeight:270,
+                        maklerPrice: maklerPrice,
+                        isFurnished: isFurnished,
+                        isNegotiable: negotiable,
+                        isNewBuilding: isNewBuilding,
+                        contactPhone: contactController?.text,
+                        apartmentHas: apartementHas,
+                        nearby: nearby);
                   },
                   child: Container(
                     width: 200,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:uy_admin/UI/panel/pages/announce_info/announce_details_add.dart';
 import 'package:uy_admin/UI/widgets/custom_dropdown.dart';
 import 'package:uy_admin/UI/widgets/custom_text_field.dart';
+import 'package:uy_admin/storage/LocalStoage.dart';
 
 import '../../../../models/announce_details.dart';
 import '../../../../urls/Urls.dart';
@@ -25,12 +26,16 @@ class _AnnounceDetailsState extends State<AnnounceInfo> {
   List<AnnounceDetail> a=[AnnounceDetail(id: 0,uz: "",ru: "")];
 
   Future<void> getDetail()async{
-    var result = await http.get(Uri.parse(AppUrls.announceDetail));
+    var result = await http.get(Uri.parse(AppUrls.announceDetail),
+        headers: {
+      "Authorization":"Bearer ${LocalStorage.accessToken}"}
+    );
     if (kDebugMode) {
-      print(result.body);
+      print(result.statusCode);
+      print(result.headers["WWW-Authenticate"]);
     }
     if(result.statusCode==200){
-      var res=jsonDecode(result.body);
+      var res = jsonDecode(result.body);
       apartementHas=res["data"]["apartementHas"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
       layout=res["data"]["layout"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
       nearby=res["data"]["nearby"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
@@ -38,9 +43,7 @@ class _AnnounceDetailsState extends State<AnnounceInfo> {
       repair=res["data"]["repair"].map<AnnounceDetail>((e) => AnnounceDetail.fromJson(e)).toList();
       current=repair;
       loading=false;
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 

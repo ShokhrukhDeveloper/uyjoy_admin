@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:uy_admin/storage/LocalStoage.dart';
+import 'package:uy_admin/urls/Urls.dart';
 import '../panel/panel_screen.dart';
 import 'auth_widget.dart';
 
@@ -11,27 +14,61 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginScreen> {
-  TextEditingController login=TextEditingController();
-  TextEditingController password=TextEditingController();
+  TextEditingController login = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  bool loading=false;
+  Future<void>logIn({required String login, required String password})async
+  {
+    setState(() {
+      loading=true;
+    });
+    var response = await http.post(Uri.parse(AppUrls.logIn),
+        headers: {
+      "Accept": "application/json",
+      "content-type": "application/json"
+    },body: jsonEncode(
+          {
+            "phone": login,
+            "password": password
+          }
+    ));
+    print(response.statusCode);
+    print(response.body);
+    if(response.statusCode == 200){
+      var session = jsonDecode(response.body);
+      LocalStorage.accessToken=session["data"]["accesToken"];
+      success();
+    }
+
+  }
+  void success(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminPanel()),
+        (route) => false);
+  }
   @override
   void dispose() {
-    // TODO: implement dispose
     login.dispose();
     password.dispose();
+    if(LocalStorage.accessToken==null)success();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return    Scaffold(
+    return Scaffold(
       body: Center(
         child: AuthWidget(
           loginController: login,
           passwordController: password,
-          onPressed: (){
+          onPressed: () {
             print(login.text);
-            print(password.text);
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const AdminPanel()), (route) => false);
+            print(LocalStorage.accessToken);
+            logIn(login: login.text, password: password.text);
+
+
           },
         ),
       ),

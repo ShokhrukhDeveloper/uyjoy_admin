@@ -42,9 +42,9 @@ screenType screen=screenType.home;
       drawer:MediaQuery.of(context).size.width<600? NavigationSidebar(selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,):const SizedBox(),
       appBar: AppBar(
-        title:  InkWell(
-          child: const Text('Admin Panel'),
-          // onTap: ()=>Navigator.of(context).restorablePushReplacement((context, arguments) =>MaterialPageRoute(builder: (c)=>const HomePage())),
+        title:  const InkWell(
+          child: Text('Admin Panel'),
+
         ),
         actions: [
           IconButton(
@@ -99,7 +99,7 @@ class NavigationSidebar extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
+          const DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.blue,
             ),

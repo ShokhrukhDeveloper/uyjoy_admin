@@ -6,50 +6,55 @@ class ProductItemWidget extends StatelessWidget {
   final AnnouncementItem announcement;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AspectRatio(
-          aspectRatio: 1.0,
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child:  Image(
-                image: NetworkImage("${AppUrls.baseUrl}/files/${announcement.photo}"),
-                fit: BoxFit.cover,
-              )),
-        ),
-         Text(announcement.title,
-          style: const TextStyle(fontWeight:FontWeight.w500,
-              fontSize: 18
+    return InkWell(
+      onTap: (){
+
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 1.0,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child:  Image(
+                  image: NetworkImage("${AppUrls.baseImageUrl}/${announcement.photo}"),
+                  fit: BoxFit.cover,
+                )),
           ),
-        ),
-         Text(announcement.price.toStringAsFixed(2),
-          style: const TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
-        Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 4),
-              padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
-              decoration: BoxDecoration(
-                  color: const Color(0xffEFEFEF),
-                  borderRadius: BorderRadius.circular(8)
-              ),
-              child:  Text(announcement.repair??""),
+           Text(announcement.title,
+            style: const TextStyle(fontWeight:FontWeight.w500,
+                fontSize: 18
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
-              decoration: BoxDecoration(
-                  color: const Color(0xffEFEFEF),
-                  borderRadius: BorderRadius.circular(8)
-
+          ),
+           Text(announcement.price.toStringAsFixed(2),
+            style: const TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 4),
+                padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
+                decoration: BoxDecoration(
+                    color: const Color(0xffEFEFEF),
+                    borderRadius: BorderRadius.circular(8)
+                ),
+                child:  Text(announcement.repair??""),
               ),
-              child: const Text("10/10"),
-            ),
-          ],
-        ),
-        Text(announcement.flatHasThings??""),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
+                decoration: BoxDecoration(
+                    color: const Color(0xffEFEFEF),
+                    borderRadius: BorderRadius.circular(8)
 
-      ],
+                ),
+                child: const Text("10/10"),
+              ),
+            ],
+          ),
+          Text(announcement.flatHasThings??""),
+
+        ],
+      ),
     );
   }
 }

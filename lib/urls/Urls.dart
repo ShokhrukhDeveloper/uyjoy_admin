@@ -11,6 +11,8 @@ class AppUrls{
   static const announceDetailApartementHas="$announceDetail/ApartementHas";
   static const announceDetailTypeOfBuilding="$announceDetail/TypeOfBuilding";
   static const _announceSearch="$announce/search?";
+
+  static const baseImageUrl="$baseUrl/files";
   static  String announceSearch(String text,[int limit=10,int page=1])=>
       "${_announceSearch}text=$text&Limit=$limit&Page=$page";
 }

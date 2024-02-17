@@ -40,7 +40,9 @@ screenType screen=screenType.home;
   Widget build(BuildContext context) {
     return Scaffold(
       drawer:MediaQuery.of(context).size.width<600? NavigationSidebar(selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,):const SizedBox(),
+        onItemTapped: _onItemTapped,)
+          :
+      const SizedBox(),
       appBar: AppBar(
         title:  const InkWell(
           child: Text('Admin Panel'),
@@ -48,10 +50,9 @@ screenType screen=screenType.home;
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-              // Handle sign out or navigate to login screen
-              // Example: Navigator.pushReplacementNamed(context, '/login');
+
             },
           ),
         ],

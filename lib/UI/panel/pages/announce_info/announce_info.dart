@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uy_admin/UI/panel/pages/announce_info/announce_details_add.dart';
-import 'package:uy_admin/UI/widgets/custom_dropdown.dart';
-import 'package:uy_admin/UI/widgets/custom_text_field.dart';
 import 'package:uy_admin/storage/LocalStoage.dart';
 
 import '../../../../models/announce_details.dart';

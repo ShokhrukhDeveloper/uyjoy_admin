@@ -30,7 +30,7 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
           });
         }
       else{
-        errorMsg("Xatol yuz berdi ");
+        errorMsg("Xatolik yuz berdi ");
       }
   }
   void  errorMsg(String errMsg)=>ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errMsg,style: const TextStyle(color: Colors.white),),backgroundColor: Colors.red,));

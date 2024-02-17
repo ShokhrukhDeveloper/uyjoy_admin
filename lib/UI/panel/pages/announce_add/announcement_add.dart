@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:uy_admin/UI/widgets/custom_text_field.dart';
 import 'package:uy_admin/models/announce_details.dart';
 
+import '../../../../storage/LocalStoage.dart';
 import '../../../../urls/Urls.dart';
 import '../../../widgets/checkbox_grid.dart';
 import '../../../widgets/custom_addtional_button.dart';
@@ -128,7 +129,7 @@ Future<void> createNew({
       }
     var response = await http.post(Uri.parse(AppUrls.announce),
     headers: {
-      // "Accept": "application/json",
+      "Authorization":"Bearer ${LocalStorage.accessToken}",
       "content-type": "application/json"
     },
     body: json.encode({

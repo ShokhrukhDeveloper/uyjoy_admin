@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../../../storage/LocalStoage.dart';
 import '../../../../urls/Urls.dart';
 import '../../../widgets/custom_text_field.dart';
 class AnnounceAddDetails extends StatefulWidget {
@@ -91,6 +92,7 @@ class _AnnounceAddDetailsState extends State<AnnounceAddDetails> {
     });
     try{
       var response = await http.post(Uri.parse(url), headers: {
+        "Authorization":"Bearer ${LocalStorage.accessToken}",
         "Accept": "application/json",
         "content-type": "application/json"
       },body: jsonEncode({

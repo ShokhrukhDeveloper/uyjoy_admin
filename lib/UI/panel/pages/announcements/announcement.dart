@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:uy_admin/UI/panel/pages/announcements/product_item.dart';
 import  'package:http/http.dart' as http;
@@ -7,6 +6,7 @@ import 'package:uy_admin/urls/Urls.dart';
 
 
 import '../../../../models/announces.dart';
+import '../../../../storage/LocalStoage.dart';
 
 class AnnouncementWidget extends StatefulWidget {
   const AnnouncementWidget({super.key});
@@ -16,7 +16,25 @@ class AnnouncementWidget extends StatefulWidget {
 }
 
 class _AnnouncementWidgetState extends State<AnnouncementWidget> {
-
+  Future<void>disable(AnnouncementItem item)async
+  {
+    var result = await http.get(Uri.parse("${AppUrls.announceDisable}/${item.id}"),
+        headers: {
+          "Authorization":"Bearer ${LocalStorage.accessToken}",
+          "content-type": "application/json"
+        }
+    );
+    if(result.statusCode==200)
+      {
+        announement.remove(item);
+        setState(() {
+        successMsg("Muvoqqiyatli diable qilindi");
+        });
+      }
+        else{
+      errorMsg("xatolik yuz berdi yoki serverda xatolik");
+    }
+  }
   List<AnnouncementItem> announement=[];
   Future<void> getData()async{
     var result =  await http.get(Uri.parse(AppUrls.announce));
@@ -52,7 +70,13 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
           mainAxisSpacing: 10,
           crossAxisSpacing: 10
       ),
-          itemBuilder: (context,index)=> ProductItemWidget(announcement: announement[index],)),
+          itemBuilder: (context,index)=> Stack(
+            children: [
+
+              ProductItemWidget(announcement: announement[index],),
+              IconButton(onPressed: ()=>disable(announement[index]), icon: const Icon(Icons.disabled_visible_sharp,color: Colors.deepOrange,)),
+            ],
+          )),
     );
   }
 }

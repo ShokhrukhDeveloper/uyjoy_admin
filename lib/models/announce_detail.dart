@@ -21,6 +21,7 @@ class Details {
       required this.priceType,
       required this.price,
       required this.photo,
+      required this.createdAt,
       required this.title,
       required this.description,
       required this.typeOfBuildingId,
@@ -50,6 +51,7 @@ class Details {
  factory Details.fromJson(dynamic json)
  {
   return  Details(
+    createdAt: json['createdAt'],
        isActive : json['isActive'],
        images : json['images'] != null ? json['images'].cast<String>() : [],
        priceType : json['priceType'],
@@ -88,8 +90,9 @@ class Details {
  final bool priceType;
  final num price;
  final String photo;
- final String title;
  final String description;
+ final String title;
+ final String createdAt;
  final num typeOfBuildingId;
   dynamic typeOfBuilding;
   num? regionId;

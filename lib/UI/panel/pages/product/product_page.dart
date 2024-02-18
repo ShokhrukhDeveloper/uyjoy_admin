@@ -54,7 +54,8 @@ class _ProductPageState extends State<ProductPage> {
     super.initState();
   }
 
-  final numberFormat = NumberFormat("#,##0", "uz_UZ");
+  final numberFormat = NumberFormat.compactSimpleCurrency(locale: 'uz_UZB');
+  var dateFormat=DateFormat.yMMMd();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,8 +74,10 @@ class _ProductPageState extends State<ProductPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(
-
+                        Container(
+                          padding: const EdgeInsets.all(50),
+                        margin: const EdgeInsets.all(50),
+                        height: 500,
                           child: ImageViewer(
                             imgList: data?.details.images??[],
                           ),
@@ -84,7 +87,7 @@ class _ProductPageState extends State<ProductPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("Kecha 17:48 da"),
+                               if(data?.details!=null)Text(dateFormat.format(DateTime.parse(data!.details.createdAt))),
                               Text(
                                 "${data?.details.title}",
                                 style: const TextStyle(

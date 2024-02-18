@@ -30,7 +30,6 @@ class _AnnounceDetailsState extends State<AnnounceInfo> {
     );
     if (kDebugMode) {
       print(result.statusCode);
-      print(result.headers["WWW-Authenticate"]);
     }
     if(result.statusCode==200){
       var res = jsonDecode(result.body);
